@@ -1,14 +1,24 @@
 package ru.netology.web.page;
 
 import com.codeborne.selenide.SelenideElement;
+import org.openqa.selenium.support.FindBy;
+import ru.alfabank.alfatest.cucumber.annotations.Name;
+import ru.alfabank.alfatest.cucumber.api.AkitaPage;
 import ru.netology.web.data.DataHelper;
+import static com.codeborne.selenide.Selenide.page;
 
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
 
-public class VerificationPage {
-    private SelenideElement codeField = $("[data-test-id=code] input");
-    private SelenideElement verifyButton = $("[data-test-id=action-verify]");
+
+@Name("Верификация")
+public class VerificationPage extends AkitaPage {
+
+    @Name("Проверочный код")
+    @FindBy(css = "[data-test-id=code] input")
+    private SelenideElement codeField;
+    @Name("Продолжить2")
+    @FindBy(css = "[data-test-id=action-verify]")
+    private SelenideElement verifyButton;
 
     public VerificationPage() {
         codeField.shouldBe(visible);
@@ -17,6 +27,11 @@ public class VerificationPage {
     public DashboardPage validVerify(DataHelper.VerificationCode verificationCode) {
         codeField.setValue(verificationCode.getCode());
         verifyButton.click();
-        return new DashboardPage();
+        return page(DashboardPage.class);
     }
 }
+
+
+
+
+

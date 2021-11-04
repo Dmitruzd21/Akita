@@ -1,17 +1,37 @@
-plugins {
-    id 'java'
+buildscript {
+    repositories {
+        maven {
+            url 'https://dl.bintray.com/alfa-laboratory/maven-releases/'
+        }
+    }
+
+    dependencies {
+        classpath 'ru.alfalab.gradle:cucumber-parallel-test-gradle-plugin:0.3.2'
+        classpath 'ru.alfalab.gradle:cucumber-reporting-gradle-plugin:0.1.0'
+    }
 }
 
-group 'org.example'
+plugins {
+    id 'java'
+    id 'groovy'
+}
+
+apply plugin: 'ru.alfalab.cucumber-parallel-test'
+apply plugin: 'ru.alfalab.cucumber-reporting'
+generateRunner.glue = ["ru.alfabank.steps", "ru.netology.web.step"]
+
+
+group 'ru.netology'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 11
+sourceCompatibility = 1.8
 
 // кодировка файлов (если используете русский язык в файлах)
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
@@ -27,6 +47,8 @@ dependencies {
 
     testCompileOnly 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    testImplementation 'ru.alfabank.tests:akita:4.1.3'
 
 
 }

@@ -1,29 +1,29 @@
 package ru.netology.web.page;
 
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import ru.alfabank.alfatest.cucumber.annotations.Name;
+import ru.alfabank.alfatest.cucumber.api.AkitaPage;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 
-public class DashboardPage {
+
+@Name("Дэшборд")
+public class DashboardPage extends AkitaPage {
+    @Name("Заголовок")
     private SelenideElement heading = $("[data-test-id=dashboard]");
-    private ElementsCollection cards = $$(".list__item");
+    @Name("Первая карта")
+    private SelenideElement firstCard = $("#root div ul li:nth-child(1) div");
+    @Name("Вторая карта")
+    private SelenideElement secondCard = $("#root div ul li:nth-child(2) div");
+
     private final String balanceStart = "баланс: ";
     private final String balanceFinish = " р.";
-
-    private SelenideElement firstCard = $$("#root div ul li:nth-child(1) div").first();
-    private SelenideElement secondCard = $$("#root div ul li:nth-child(2) div").last();
-
-    // сумма перевода
-    //private int transferAmount = ReplenishmentPage.getAmountValueInt();
 
     public DashboardPage() {
         heading.shouldBe(visible);
     }
-
 
     // data - класс для хранеия и извлечения информации о начальном балансе карт
     public class InitialCardsBalance {
@@ -50,16 +50,16 @@ public class DashboardPage {
 
     // метод получения начального баланса карт
     public int getInitialBalanceOfCard(int cardIndex) {
-        var initialCardsBalance = new InitialCardsBalance();
-        var text = "";
+        InitialCardsBalance initialCardsBalance = new InitialCardsBalance();
+        String text = "";
         int initialCardBalance = 0;
         if (cardIndex == 1) {
-            text = cards.first().text();
+            text = firstCard.text();
             initialCardsBalance.setCard1Balance(exctractBalance(text));
             initialCardBalance = initialCardsBalance.getCard1Balance();
         }
         if (cardIndex == 2) {
-            text = cards.last().text();
+            text = secondCard.text();
             initialCardsBalance.setCard2Balance(exctractBalance(text));
             initialCardBalance = initialCardsBalance.getCard2Balance();
         }
@@ -67,9 +67,9 @@ public class DashboardPage {
     }
 
     public int exctractBalance(String text) {
-        var start = text.indexOf(balanceStart);
-        var finish = text.indexOf(balanceFinish);
-        var value = text.substring(start + balanceStart.length(), finish);
+        int start = text.indexOf(balanceStart);
+        int finish = text.indexOf(balanceFinish);
+        String value = text.substring(start + balanceStart.length(), finish);
         return Integer.parseInt(value);
     }
 
@@ -98,8 +98,7 @@ public class DashboardPage {
 
     // метод для вычисления окончательного баланса карт
     public FinalCardsBalance finalBalance(String from1To2OrFrom2to1, int initialBalanceCard1, int initialBalanceCard2, int transferAmount) {
-        var сardsBalance = new FinalCardsBalance();
-        var initialBalance = new InitialCardsBalance();
+        FinalCardsBalance сardsBalance = new FinalCardsBalance();
         if (from1To2OrFrom2to1 == "from1To2") {
             int finalBalanceOfTheFirstCard = initialBalanceCard1 - transferAmount;
             int finalBalanceOfTheSecondCard = initialBalanceCard2 + transferAmount;
@@ -126,7 +125,7 @@ public class DashboardPage {
         if (from1To2OrFrom2to1 == "from1To2") {
             cardBalance = finalBalanceOfCard1;
         }
-        if (from1To2OrFrom2to1 == "from2To1"){
+        if (from1To2OrFrom2to1 == "from2To1") {
             cardBalance = finalBalanceOfCard2;
         }
         return cardBalance;
